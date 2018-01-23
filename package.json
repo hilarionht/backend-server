@@ -1,0 +1,19 @@
+{
+    "name": "backend-server",
+    "version": "1.0.0",
+    "description": "Servidor backend",
+    "main": "index.js",
+    "autor": "Hilarion Trejo",
+    "license": "MIT",
+    "scripts": {
+        "start": "nodemon app.js",
+        "test": "echo \"error: no test specified\" && exit 1"
+    },
+    "dependencies": {
+        "express": "^4.16.2",
+        "mongoose": "^5.0.1"
+    },
+    "devDependencies": {
+        "nodemon": "^1.14.11"
+    }
+}
