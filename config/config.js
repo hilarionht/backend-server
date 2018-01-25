@@ -1,0 +1,1 @@
+module.exports.SEED = 'thiago_213900%_mivida';
