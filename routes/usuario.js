@@ -4,7 +4,9 @@ var app = express();
 
 var bcrypt = require('bcryptjs');
 
-var SEED = require('../config/config').SEED;
+var jwt = require('jsonwebtoken');
+
+var mdAutenticacion = require('../middlewares/autenticacion');
 
 const saltRounds = 10;
 
@@ -39,16 +41,11 @@ app.get('/', (req, res, next) => {
     //res.status(200).json({ mensaje: 'Get de usuarios!', ok: true });
 
 });
-app.use('/', (req, res, next) => {
 
-    var token = req.query.token;
-
-
-});
 // ========================================
 //          agregar usuario nuevo
 //=========================================
-app.post('/', (req, res) => {
+app.post('/', mdAutenticacion.verificaToken, (req, res) => {
     var body = req.body;
 
     var usuario = new Usuario({
@@ -68,7 +65,8 @@ app.post('/', (req, res) => {
         }
         res.status(201).json({
             ok: true,
-            usuario: usuarioGuardado
+            usuario: usuarioGuardado,
+            usuarioToken: req.usuario
         });
     });
 
