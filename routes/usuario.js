@@ -8,35 +8,34 @@ var jwt = require('jsonwebtoken');
 
 var mdAutenticacion = require('../middlewares/autenticacion');
 
-const saltRounds = 10;
-
-const myPlaintextPassword = 's0/\/\P4$$w0rD';
-
-const someOtherPlaintextPassword = 'not_bacon';
-
-var salt = bcrypt.genSaltSync(saltRounds);
-var hash = bcrypt.hashSync(myPlaintextPassword, salt);
-
 var Usuario = require('../models/usuario');
 // ========================================
 //          Obtenere Todo los Usuarios
 //=========================================
 app.get('/', (req, res, next) => {
-
-    Usuario.find({}, 'nombre email img role').exec(
-        (err, usuarios) => {
-            if (err) {
-                return res.status(500).json({
-                    ok: false,
-                    mensaje: 'Error loading usuarios',
-                    errors: err
+    var desde = req.query.desde || 0;
+    desde = Number(desde);
+    Usuario.find({}, 'nombre email img role')
+        .skip(desde)
+        .limit(5)
+        .exec(
+            (err, usuarios) => {
+                if (err) {
+                    return res.status(500).json({
+                        ok: false,
+                        mensaje: 'Error loading usuarios',
+                        errors: err
+                    });
+                }
+                Usuario.count({}, (err, conteo) => {
+                    res.status(200).json({
+                        ok: true,
+                        usuarios: usuarios,
+                        total: conteo
+                    });
                 });
-            }
-            res.status(200).json({
-                ok: true,
-                usuarios: usuarios
-            });
-        })
+
+            })
 
     //res.status(200).json({ mensaje: 'Get de usuarios!', ok: true });
 

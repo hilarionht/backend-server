@@ -5,9 +5,6 @@ var bodyParser = require('body-parser');
 var jwt = require('jsonwebtoken');
 //inicializar variables
 var app = express();
-
-
-//body-parse
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
     // parse application/json
@@ -16,26 +13,27 @@ app.use(bodyParser.json())
 // importar rutas
 var personaRoutes = require('./routes/persona');
 var usuarioRoutes = require('./routes/usuario');
+var hospitalRoutes = require('./routes/hopital');
+var medicoRoutes = require('./routes/medico');
 var loginRoutes = require('./routes/login');
+var searchRoute = require('./routes/search');
+var uploadRoutes = require('./routes/upload');
+var imagenesRoutes = require('./routes/imagenes');
 var appRoutes = require('./routes/app');
-
+//
+// var serveIndex = require('serve-index');
+// app.use(express.static(__dirname + '/'))
+// app.use('/uploads', serveIndex(__dirname + '/uploads'));
 //rutas
 app.use('/persona', personaRoutes);
-
 app.use('/usuario', usuarioRoutes);
-
+app.use('/hospital', hospitalRoutes);
+app.use('/medico', medicoRoutes);
 app.use('/login', loginRoutes);
-
+app.use('/search', searchRoute);
+app.use('/upload', uploadRoutes);
+app.use('/img', imagenesRoutes);
 app.use('/', appRoutes);
-
-
-// app.get('/', (req, res, next) => {
-
-//     res.status(200).json({ mensaje: 'OK', ok: true });
-
-// });
-
-
 
 //conexion a la base de datos
 
