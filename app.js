@@ -33,15 +33,20 @@ var appRoutes = require('./routes/app');
 // app.use(express.static(__dirname + '/'))
 // app.use('/uploads', serveIndex(__dirname + '/uploads'));
 //rutas
-app.use('/persona', personaRoutes);
-app.use('/usuario', usuarioRoutes);
-app.use('/hospital', hospitalRoutes);
-app.use('/medico', medicoRoutes);
-app.use('/login', loginRoutes);
-app.use('/search', searchRoute);
-app.use('/upload', uploadRoutes);
-app.use('/img', imagenesRoutes);
-app.use('/', appRoutes);
+app.use('/', express.static('cliente', { redirect: false }));
+app.use('/api/persona', personaRoutes);
+app.use('/api/usuario', usuarioRoutes);
+app.use('/api/hospital', hospitalRoutes);
+app.use('/api/medico', medicoRoutes);
+app.use('/api/login', loginRoutes);
+app.use('/api/search', searchRoute);
+app.use('/api/upload', uploadRoutes);
+app.use('/api/img', imagenesRoutes);
+app.use('/api/', appRoutes);
+
+app.get('*', function(req, res, next) {
+    res.sendfile(path.resolve('cliente/index.html'));
+});
 
 //conexion a la base de datos
 
