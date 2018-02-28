@@ -10,13 +10,13 @@ var app = express();
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS")
+    res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
     next();
 });
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
-    // parse application/json
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }));
+// parse application/json
+app.use(bodyParser.json());
 
 // importar rutas
 var personaRoutes = require('./routes/persona');
@@ -28,12 +28,8 @@ var searchRoute = require('./routes/search');
 var uploadRoutes = require('./routes/upload');
 var imagenesRoutes = require('./routes/imagenes');
 var appRoutes = require('./routes/app');
-//
-// var serveIndex = require('serve-index');
-// app.use(express.static(__dirname + '/'))
-// app.use('/uploads', serveIndex(__dirname + '/uploads'));
 //rutas
-app.use('/', express.static('cliente', { redirect: false }));
+app.use('/', express.static('client', { redirect: false }));
 app.use('/api/persona', personaRoutes);
 app.use('/api/usuario', usuarioRoutes);
 app.use('/api/hospital', hospitalRoutes);
@@ -45,7 +41,7 @@ app.use('/api/img', imagenesRoutes);
 app.use('/api/', appRoutes);
 
 app.get('*', function(req, res, next) {
-    res.sendfile(path.resolve('cliente/index.html'));
+    res.sendfile(path.resolve('client/index.html'));
 });
 
 //conexion a la base de datos
