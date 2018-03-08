@@ -8,7 +8,7 @@ var jwt = require("jsonwebtoken");
 
 var mdAutenticacion = require("../middlewares/autenticacion");
 
-var TipoProducto = require("../models/tipoProducto");
+var TipoProducto = require("../models/tipoproducto");
 // ========================================
 //          Obtenere Todo los tipoProducto
 //=========================================
