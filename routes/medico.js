@@ -43,7 +43,7 @@ app.get("/", (req, res, next) => {
 // ========================================
 //          agregar medico nuevo
 //=========================================
-app.post("/", mdAutenticacion.verificaToken, (req, res) => {
+app.post("/", mdAutenticacion.verificaToken, (req, res, next) => {
     var body = req.body;
 
     var medico = new Medico({

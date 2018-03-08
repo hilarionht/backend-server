@@ -4,6 +4,7 @@ var app = express();
 var Hospital = require('../models/hospital');
 var Medico = require('../models/medico');
 var Usuario = require('../models/usuario');
+var Producto = require('../models/producto');
 //busqueda por una collecion
 app.get('/coleccion/:tabla/:busqueda', (req, res) => {
     var coleccion = req.params.tabla;
@@ -13,6 +14,9 @@ app.get('/coleccion/:tabla/:busqueda', (req, res) => {
     switch (coleccion) {
         case 'usuarios':
             promesa = buscarUsuarios(busqueda, regex);
+            break;
+        case 'productos':
+            promesa = buscarProductos(busqueda, regex);
             break;
         case 'hospitales':
             promesa = buscarHospitales(busqueda, regex);
@@ -101,6 +105,23 @@ function buscarUsuarios(busqueda, regex) {
                     resolve(usuarios);
                 }
             })
+    });
+
+}
+
+function buscarProductos(busqueda, regex) {
+
+    return new Promise((resolve, reject) => {
+        Producto.find({ nombre: regex })
+            // .populate('usuario', 'nombre email')
+            // .populate('hospital')
+            .exec((err, productos) => {
+                if (err) {
+                    reject('error al cargar medicos', err);
+                } else {
+                    resolve(productos);
+                }
+            });
     });
 
 }

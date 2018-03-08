@@ -8,7 +8,7 @@ exports.verificaToken = function(req, res, next) {
 
     var token = req.query.token;
 
-    jwt.verify(token, SEED, (err, decodet) => {
+    jwt.verify(token, SEED, (err, decoder) => {
         if (err) {
             return res.status(401).json({
                 ok: false,
@@ -16,7 +16,7 @@ exports.verificaToken = function(req, res, next) {
                 errors: err
             });
         }
-        req.usuario = decodet.usuario;
+        req.usuario = decoder.usuario;
         next();
         // res.status(200).json({
         //     ok: true,

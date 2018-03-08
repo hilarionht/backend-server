@@ -1,6 +1,10 @@
 var express = require('express');
 
+var cors = require('cors');
+//inicializar variables
 var app = express();
+//CORS
+app.use(cors());
 
 var bcrypt = require('bcryptjs');
 

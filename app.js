@@ -3,22 +3,49 @@ var express = require('express');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var jwt = require('jsonwebtoken');
+var cors = require('cors');
 //inicializar variables
 var app = express();
 //CORS
+app.use(cors());
+// app.use(function(req, res, next) {
+//     res.setHeader("Access-Control-Allow-Origin", "*");
+//     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//     res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
+//     res.setHeader("Access-Control-Allow-Credentials", true);
+//     next();
+// });
 
-app.use(function(req, res, next) {
+// app.use(function(req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//     res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
+//     next();
+// });
+
+app.use("/api/*", function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Headers", "Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With");
     res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
     next();
 });
+
+// app.all("/api/*", function(req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Headers", "Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With");
+//     res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
+//     console.log('in apiii');
+
+//     return next();
+// });
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
 // importar rutas
+var tipoProductoRoutes = require('./routes/tipoproducto');
+var productoRoutes = require('./routes/producto');
 var personaRoutes = require('./routes/persona');
 var usuarioRoutes = require('./routes/usuario');
 var hospitalRoutes = require('./routes/hopital');
@@ -29,7 +56,9 @@ var uploadRoutes = require('./routes/upload');
 var imagenesRoutes = require('./routes/imagenes');
 var appRoutes = require('./routes/app');
 //rutas
-app.use('/', express.static('client', { redirect: false }));
+app.use('/', express.static('cliente', { redirect: false }));
+app.use('/api/tipo-producto', tipoProductoRoutes);
+app.use('/api/producto', productoRoutes);
 app.use('/api/persona', personaRoutes);
 app.use('/api/usuario', usuarioRoutes);
 app.use('/api/hospital', hospitalRoutes);
@@ -41,7 +70,7 @@ app.use('/api/img', imagenesRoutes);
 app.use('/api/', appRoutes);
 
 app.get('*', function(req, res, next) {
-    res.sendfile(path.resolve('client/index.html'));
+    res.sendfile(path.resolve('cliente/index.html'));
 });
 
 //conexion a la base de datos
