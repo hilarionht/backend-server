@@ -71,6 +71,7 @@ app.put('/:tipo/:id', (req, res, next) => {
 });
 
 function subirPorTipo(tipo, id, nombreArchivo, res) {
+    console.log();
 
     if (tipo === 'usuarios') {
         Usuario.findById(id, (err, usuario) => { // en caso de error usar el mismo 
@@ -85,13 +86,15 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
             if (fs.existsSync(pathViejo)) {
                 fs.unlink(pathViejo);
             }
+
             usuario.img = nombreArchivo;
             usuario.save((err, usuarioActualizado) => {
                 usuarioActualizado.password = ':(';
+
                 return res.status(200).json({
                     ok: true,
                     mensaje: 'Imagen de usuario actualizado',
-                    nombre: usuarioActualizado
+                    usuario: usuarioActualizado
                 });
             })
         });
@@ -117,7 +120,7 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
                 return res.status(200).json({
                     ok: true,
                     mensaje: 'Imagen de medico actualizado',
-                    nombre: medicoActualizado
+                    medico: medicoActualizado
                 });
             });
         });
@@ -142,7 +145,31 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
                 return res.status(200).json({
                     ok: true,
                     mensaje: 'Imagen de medico actualizado',
-                    nombre: hospitalActualizado
+                    hospital: hospitalActualizado
+                });
+            })
+        });
+    }
+    if (tipo === 'productos') {
+        Producto.findById(id, (err, producto) => { // en caso de error usar el mismo 
+            if (!producto) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: "el producto con el id: " + id + "no existe ",
+                    errors: { message: "no existe un producto con ese id" }
+                });
+            }
+            var pathViejo = './uploads/productos/' + producto.img;
+            if (fs.existsSync(pathViejo)) {
+                fs.unlink(pathViejo);
+            }
+            producto.img = nombreArchivo;
+            producto.save((err, productoActualizado) => {
+
+                return res.status(200).json({
+                    ok: true,
+                    mensaje: 'Imagen de medico actualizado',
+                    producto: productoActualizado
                 });
             })
         });

@@ -1,5 +1,7 @@
 //requires
+
 var express = require('express');
+
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var jwt = require('jsonwebtoken');
@@ -45,6 +47,8 @@ app.use(bodyParser.json());
 
 // importar rutas
 var tipoProductoRoutes = require('./routes/tipoproducto');
+var marcaRoutes = require('./routes/marca');
+var modeloRoutes = require('./routes/modelo');
 var productoRoutes = require('./routes/producto');
 var personaRoutes = require('./routes/persona');
 var usuarioRoutes = require('./routes/usuario');
@@ -57,10 +61,12 @@ var imagenesRoutes = require('./routes/imagenes');
 var appRoutes = require('./routes/app');
 //rutas
 app.use('/', express.static('cliente', { redirect: false }));
+app.use('/api/usuario', usuarioRoutes);
 app.use('/api/tipo-producto', tipoProductoRoutes);
+app.use('/api/marca', marcaRoutes);
+app.use('/api/modelo', modeloRoutes);
 app.use('/api/producto', productoRoutes);
 app.use('/api/persona', personaRoutes);
-app.use('/api/usuario', usuarioRoutes);
 app.use('/api/hospital', hospitalRoutes);
 app.use('/api/medico', medicoRoutes);
 app.use('/api/login', loginRoutes);

@@ -9,6 +9,7 @@ var usuarioSchema = new Schema({
     nombre: { type: String, required: [true, 'el nombre es requerido'] },
     email: { type: String, unique: true, required: [true, 'el correo es requerido'] },
     password: { type: String, required: [true, 'el password es requerido'] },
+    fechaAlta: { type: Date, default: Date.now, required: true },
     img: { type: String, required: false },
     role: { type: String, required: true, default: 'USER_ROLE', enum: rolesValidos },
     google: { type: Boolean, required: true, default: false }

@@ -4,6 +4,8 @@ var app = express();
 var Hospital = require('../models/hospital');
 var Medico = require('../models/medico');
 var Usuario = require('../models/usuario');
+var Marca = require('../models/marca');
+var Modelo = require('../models/modelo');
 var Producto = require('../models/producto');
 //busqueda por una collecion
 app.get('/coleccion/:tabla/:busqueda', (req, res) => {
@@ -18,8 +20,17 @@ app.get('/coleccion/:tabla/:busqueda', (req, res) => {
         case 'productos':
             promesa = buscarProductos(busqueda, regex);
             break;
+        case 'marcas':
+            promesa = buscarMarca(busqueda, regex);
+            break;
+        case 'modelos':
+            promesa = buscarModelos(busqueda, regex);
+            break;
         case 'hospitales':
             promesa = buscarHospitales(busqueda, regex);
+            break;
+        case 'tipoproductos':
+            promesa = buscarTipoProductos(busqueda, regex);
             break;
         case 'medicos':
             promesa = buscarMedicos(busqueda, regex);
@@ -114,12 +125,61 @@ function buscarProductos(busqueda, regex) {
     return new Promise((resolve, reject) => {
         Producto.find({ nombre: regex })
             // .populate('usuario', 'nombre email')
-            // .populate('hospital')
+            .populate('tipoProducto')
             .exec((err, productos) => {
                 if (err) {
                     reject('error al cargar medicos', err);
                 } else {
                     resolve(productos);
+                }
+            });
+    });
+
+}
+
+function buscarMarca(busqueda, regex) {
+
+    return new Promise((resolve, reject) => {
+        Marca.find({ nombre: regex })
+            // .populate('usuario', 'nombre email')
+            //.populate('tipoProducto')
+            .exec((err, marcas) => {
+                if (err) {
+                    reject('error al cargar medicos', err);
+                } else {
+                    resolve(marcas);
+                }
+            });
+    });
+
+}
+
+function buscarModelos(busqueda, regex) {
+
+    return new Promise((resolve, reject) => {
+        Modelo.find({ nombre: regex })
+            // .populate('usuario', 'nombre email')
+            //.populate('tipoProducto')
+            .exec((err, modelos) => {
+                if (err) {
+                    reject('error al cargar medicos', err);
+                } else {
+                    resolve(modelos);
+                }
+            });
+    });
+
+}
+
+function buscarTipoProductos(busqueda, regex) {
+
+    return new Promise((resolve, reject) => {
+        TipoProducto.find({ nombre: regex })
+            .exec((err, tproductos) => {
+                if (err) {
+                    reject('error al cargar medicos', err);
+                } else {
+                    resolve(tproductos);
                 }
             });
     });

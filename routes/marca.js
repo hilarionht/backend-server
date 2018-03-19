@@ -8,56 +8,56 @@ var jwt = require("jsonwebtoken");
 
 var mdAutenticacion = require("../middlewares/autenticacion");
 
-var TipoProducto = require("../models/tipoproducto");
+var Marca = require("../models/marca");
 
 app.get('/:id', mdAutenticacion.verificaToken, (req, res) => {
 
         var id = req.params.id;
 
-        TipoProducto.findById(id)
-            .exec((err, tipoProducto) => {
+        Marca.findById(id)
+            .exec((err, marca) => {
                 if (err) {
                     return res.status(500).json({
                         ok: false,
-                        mensaje: 'Error al buscar producto',
+                        mensaje: 'Error al buscar marca',
                         errors: err
                     });
                 }
 
-                if (!tipoProducto) {
+                if (!marca) {
                     return res.status(400).json({
                         ok: false,
-                        mensaje: 'El producto con el id ' + id + 'no existe',
-                        errors: { message: 'No existe un producto con ese ID' }
+                        mensaje: 'El marca con el id ' + id + 'no existe',
+                        errors: { message: 'No existe un marca con ese ID' }
                     });
                 }
                 res.status(200).json({
                     ok: true,
-                    tipoProducto: tipoProducto
+                    marca: marca
                 });
             })
     })
     // ========================================
-    //          Obtenere Todo los tipoProducto
+    //          Obtenere Todo los marca
     //=========================================
 app.get("/", (req, res, next) => {
     var desde = req.query.desde || 0;
     desde = Number(desde);
-    TipoProducto.find({})
+    Marca.find({})
         .skip(desde)
         .limit(5)
-        .exec((err, tipoProducto) => {
+        .exec((err, marca) => {
             if (err) {
                 return res.status(500).json({
                     ok: false,
-                    mensaje: "Error loading tipoProducto",
+                    mensaje: "Error loading marca",
                     errors: err
                 });
             }
-            TipoProducto.count({}, (err, conteo) => {
+            Marca.count({}, (err, conteo) => {
                 res.status(200).json({
                     ok: true,
-                    tipoProducto: tipoProducto,
+                    marca: marca,
                     total: conteo
                 });
             });
@@ -67,97 +67,95 @@ app.get("/", (req, res, next) => {
 });
 
 // ========================================
-//          agregar tipoProducto nuevo
+//          agregar marca nuevo
 //=========================================
 app.post("/", mdAutenticacion.verificaToken, (req, res, next) => {
     var body = req.body;
 
-    var tipoProducto = new TipoProducto({
+    var marca = new Marca({
         nombre: body.nombre,
-        descripcion: body.descripcion
+        usuario: req.usuario._id
     });
-    tipoProducto.save((err, tipoProductoGuardado) => {
+    marca.save((err, marcaGuardado) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
-                mensaje: "Error agregando tipoProducto",
+                mensaje: "Error agregando marca",
                 errors: err
             });
         }
         res.status(201).json({
             ok: true,
-            tipoProducto: tipoProductoGuardado
+            marca: marcaGuardado
         });
     });
 });
 
 // ========================================
-//          actualizar tipoProducto
+//          actualizar marca
 //=========================================
 app.put("/:id", mdAutenticacion.verificaToken, (req, res) => {
     var id = req.params.id;
     var body = req.body;
 
-    TipoProducto.findById(id, (err, tipoProducto) => {
+    Marca.findById(id, (err, marca) => {
         if (err) {
             return res.status(500).json({
                 ok: false,
-                mensaje: "error al buscar tipoProducto",
+                mensaje: "error al buscar marca",
                 errors: err
             });
         }
-        if (!tipoProducto) {
+        if (!marca) {
             return res.status(400).json({
                 ok: false,
-                mensaje: "el tipoProducto con el id: " + id + "no existe ",
+                mensaje: "el marca con el id: " + id + "no existe ",
                 errors: { message: "no existe un usario con ese id" }
             });
         }
-        tipoProducto.nombre = body.nombre;
-        tipoProducto.usuario = req.usuario._id;
-        tipoProducto.hospital = body.hospital;
-        tipoProducto.modificado = req.usuario._id;
-        tipoProducto.descripcion = body.descripcion;
-        tipoProducto.save((err, tipoProductoGuardado) => {
+        marca.nombre = body.nombre;
+        marca.usuario = req.usuario._id;
+
+        marca.save((err, marcaGuardado) => {
             if (err) {
                 return res.status(400).json({
                     ok: false,
-                    mensaje: "Error actualizando tipoProducto",
+                    mensaje: "Error actualizando marca",
                     errors: err
                 });
             }
             res.status(200).json({
                 ok: true,
-                tipoProducto: tipoProductoGuardado
+                marca: marcaGuardado
             });
         });
     });
 });
 // ========================================
-//          Eliminar un tipoProducto por id
+//          Eliminar un marca por id
 //=========================================
 
 app.delete("/:id", mdAutenticacion.verificaToken, (req, res) => {
     var id = req.params.id;
 
-    TipoProducto.findByIdAndRemove(id, (err, tipoProductoBorrado) => {
+    Marca.findByIdAndRemove(id, (err, marcaBorrado) => {
         if (err) {
             return res.status(500).json({
                 ok: false,
-                mensaje: "Error al eliminar tipoProducto",
+                mensaje: "Error al eliminar marca",
                 errors: err
             });
         }
-        if (!tipoProductoBorrado) {
+        if (!marcaBorrado) {
             return res.status(400).json({
                 ok: false,
-                mensaje: "el tipoProducto con el id: " + id + "no existe ",
+                mensaje: "el marca con el id: " + id + "no existe ",
                 errors: { message: "no existe un usario con ese id" }
             });
         }
         res.status(200).json({
             ok: true,
-            tipoProducto: tipoProductoBorrado
+            marca: marcaBorrado
         });
     });
 });

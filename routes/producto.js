@@ -20,22 +20,23 @@ app.get("/", (req, res, next) => {
         .limit(5)
 
     .populate("tipoProducto", "nombre")
-        .exec((err, productos) => {
-            if (err) {
-                return res.status(500).json({
-                    ok: false,
-                    mensaje: "Error loading producto",
-                    errors: err
-                });
-            }
-            Producto.count({}, (err, conteo) => {
-                res.status(200).json({
-                    ok: true,
-                    productos: productos,
-                    total: conteo
-                });
+
+    .exec((err, productos) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                mensaje: "Error loading producto",
+                errors: err
+            });
+        }
+        Producto.count({}, (err, conteo) => {
+            res.status(200).json({
+                ok: true,
+                productos: productos,
+                total: conteo
             });
         });
+    });
 
     //res.status(200).json({ mensaje: 'Get de usuarios!', ok: true });
 });
@@ -83,7 +84,10 @@ app.post("/", mdAutenticacion.verificaToken, (req, res, next) => {
         precioCompra: body.precioCompra,
         precioVenta: body.precioVenta,
         cantidadAdvertencia: body.cantidadAdvertencia,
-        descripcion: body.descripcion
+        descripcion: body.descripcion,
+        marca: body.marca,
+        modelo: body.modelo,
+        usuario: req.usuario._id
     });
     producto.save((err, productoGuardado) => {
         if (err) {
@@ -129,7 +133,9 @@ app.put("/:id", mdAutenticacion.verificaToken, (req, res) => {
         producto.precioVenta = body.precioVenta;
         producto.cantidadAdvertencia = body.cantidadAdvertencia;
         producto.descripcion = body.descripcion;
-
+        producto.marca = body.marca;
+        producto.modelo = body.modelo;
+        producto.userMod = req.usuario._id;
         producto.save((err, productoGuardado) => {
             if (err) {
                 return res.status(400).json({
