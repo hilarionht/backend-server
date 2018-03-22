@@ -42,11 +42,14 @@ app.get('/:id', mdAutenticacion.verificaToken, (req, res) => {
     //=========================================
 app.get("/", (req, res, next) => {
     var desde = req.query.desde || 0;
+    var limite = req.query.limite || 0;
+
     desde = Number(desde);
+    limite = Number(limite);
     Modelo.find({})
         .sort({ nombre: 1 })
-        // .skip(desde)
-        //.limit(5)
+        .skip(desde)
+        .limit(limite)
         .populate('marca', 'nombre')
         .exec((err, modelo) => {
             if (err) {
@@ -75,7 +78,7 @@ app.post("/", mdAutenticacion.verificaToken, (req, res, next) => {
     var body = req.body;
 
     var modelo = new Modelo({
-        nombre: body.nombre,
+        nombre: body.nombre.toUpperCase(),
         usuario: req.usuario._id,
         marca: body.marca
     });
@@ -116,7 +119,7 @@ app.put("/:id", mdAutenticacion.verificaToken, (req, res) => {
                 errors: { message: "no existe un usario con ese id" }
             });
         }
-        modelo.nombre = body.nombre;
+        modelo.nombre = body.nombre.toUpperCase();
         modelo.usuario = req.usuario._id;
 
         modelo.save((err, modeloGuardado) => {

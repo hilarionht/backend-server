@@ -60,7 +60,7 @@ var uploadRoutes = require('./routes/upload');
 var imagenesRoutes = require('./routes/imagenes');
 var appRoutes = require('./routes/app');
 //rutas
-app.use('/', express.static('dist', { redirect: false }));
+app.use('/', express.static('cliente', { redirect: false }));
 app.use('/api/usuario', usuarioRoutes);
 app.use('/api/tipo-producto', tipoProductoRoutes);
 app.use('/api/marca', marcaRoutes);
@@ -76,7 +76,7 @@ app.use('/api/img', imagenesRoutes);
 app.use('/api/', appRoutes);
 
 app.get('*', function(req, res, next) {
-    res.sendfile(path.resolve('dist/index.html'));
+    res.sendfile(path.resolve('cliente/index.html'));
 });
 
 //conexion a la base de datos

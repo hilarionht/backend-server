@@ -6,6 +6,8 @@ var Medico = require('../models/medico');
 var Usuario = require('../models/usuario');
 var Marca = require('../models/marca');
 var Modelo = require('../models/modelo');
+
+var TipoProducto = require('../models/tipoproducto');
 var Producto = require('../models/producto');
 //busqueda por una collecion
 app.get('/coleccion/:tabla/:busqueda', (req, res) => {

@@ -78,13 +78,13 @@ app.post("/", mdAutenticacion.verificaToken, (req, res, next) => {
     var body = req.body;
 
     var producto = new Producto({
-        nombre: body.nombre,
+        nombre: body.nombre.toUpperCase(),
         tipoProducto: body.tipoProducto,
         cantidad: body.cantidad,
         precioCompra: body.precioCompra,
         precioVenta: body.precioVenta,
         cantidadAdvertencia: body.cantidadAdvertencia,
-        descripcion: body.descripcion,
+        descripcion: body.descripcion.toUpperCase(),
         marca: body.marca,
         modelo: body.modelo,
         usuario: req.usuario._id
@@ -126,13 +126,13 @@ app.put("/:id", mdAutenticacion.verificaToken, (req, res) => {
                 errors: { message: "no existe un usario con ese id" }
             });
         }
-        producto.nombre = body.nombre;
+        producto.nombre = body.nombre.toUpperCase();
         producto.tipoProducto = body.tipoProducto;
         producto.cantidad = body.cantidad;
         producto.precioCompra = body.precioCompra;
         producto.precioVenta = body.precioVenta;
         producto.cantidadAdvertencia = body.cantidadAdvertencia;
-        producto.descripcion = body.descripcion;
+        producto.descripcion = body.descripcion.toUpperCase();
         producto.marca = body.marca;
         producto.modelo = body.modelo;
         producto.userMod = req.usuario._id;

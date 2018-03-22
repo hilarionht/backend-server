@@ -43,10 +43,12 @@ app.get('/:id', mdAutenticacion.verificaToken, (req, res) => {
 app.get("/", (req, res, next) => {
     var desde = req.query.desde || 0;
     desde = Number(desde);
+    var limite = req.query.limite || 0;
+    limite = Number(limite);
     TipoProducto.find({})
         .sort({ nombre: 1 })
-        //.skip(desde)
-        //.limit(5)
+        .skip(desde)
+        .limit(limite)
         .exec((err, tipoProducto) => {
             if (err) {
                 return res.status(500).json({
@@ -74,7 +76,7 @@ app.post("/", mdAutenticacion.verificaToken, (req, res, next) => {
     var body = req.body;
 
     var tipoProducto = new TipoProducto({
-        nombre: body.nombre,
+        nombre: body.nombre.toUpperCase(),
         descripcion: body.descripcion
     });
     tipoProducto.save((err, tipoProductoGuardado) => {
@@ -114,11 +116,11 @@ app.put("/:id", mdAutenticacion.verificaToken, (req, res) => {
                 errors: { message: "no existe un usario con ese id" }
             });
         }
-        tipoProducto.nombre = body.nombre;
+        tipoProducto.nombre = body.nombre.toUpperCase();
         tipoProducto.usuario = req.usuario._id;
         tipoProducto.hospital = body.hospital;
         tipoProducto.modificado = req.usuario._id;
-        tipoProducto.descripcion = body.descripcion;
+        tipoProducto.descripcion = body.descripcion.toUpperCase();
         tipoProducto.save((err, tipoProductoGuardado) => {
             if (err) {
                 return res.status(400).json({
