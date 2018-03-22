@@ -44,8 +44,9 @@ app.get("/", (req, res, next) => {
     var desde = req.query.desde || 0;
     desde = Number(desde);
     TipoProducto.find({})
-        .skip(desde)
-        .limit(5)
+        .sort({ nombre: 1 })
+        //.skip(desde)
+        //.limit(5)
         .exec((err, tipoProducto) => {
             if (err) {
                 return res.status(500).json({

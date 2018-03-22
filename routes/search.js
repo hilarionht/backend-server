@@ -9,11 +9,11 @@ var Modelo = require('../models/modelo');
 var Producto = require('../models/producto');
 //busqueda por una collecion
 app.get('/coleccion/:tabla/:busqueda', (req, res) => {
-    var coleccion = req.params.tabla;
+    var tabla = req.params.tabla;
     var busqueda = req.params.busqueda;
     var regex = new RegExp(busqueda, 'i');
     var promesa;
-    switch (coleccion) {
+    switch (tabla) {
         case 'usuarios':
             promesa = buscarUsuarios(busqueda, regex);
             break;
@@ -23,8 +23,14 @@ app.get('/coleccion/:tabla/:busqueda', (req, res) => {
         case 'marcas':
             promesa = buscarMarca(busqueda, regex);
             break;
+        case 'buscarmarcas':
+            promesa = buscarMarcaNombre(busqueda, regex);
+            break;
         case 'modelos':
             promesa = buscarModelos(busqueda, regex);
+            break;
+        case 'modelosbyid':
+            promesa = buscarModelosById(busqueda, regex);
             break;
         case 'hospitales':
             promesa = buscarHospitales(busqueda, regex);
@@ -45,7 +51,7 @@ app.get('/coleccion/:tabla/:busqueda', (req, res) => {
     promesa.then(data => {
         res.status(200).json({
             ok: true,
-            [coleccion]: data
+            [tabla]: data
         });
     });
 });
@@ -123,12 +129,12 @@ function buscarUsuarios(busqueda, regex) {
 function buscarProductos(busqueda, regex) {
 
     return new Promise((resolve, reject) => {
-        Producto.find({ nombre: regex })
+        Producto.find({ 'nombre': regex })
             // .populate('usuario', 'nombre email')
             .populate('tipoProducto')
             .exec((err, productos) => {
                 if (err) {
-                    reject('error al cargar medicos', err);
+                    reject('error al cargar productos', err);
                 } else {
                     resolve(productos);
                 }
@@ -140,12 +146,30 @@ function buscarProductos(busqueda, regex) {
 function buscarMarca(busqueda, regex) {
 
     return new Promise((resolve, reject) => {
-        Marca.find({ nombre: regex })
+        Marca.find({})
+            .sort({ nombre: 1 })
             // .populate('usuario', 'nombre email')
             //.populate('tipoProducto')
             .exec((err, marcas) => {
                 if (err) {
-                    reject('error al cargar medicos', err);
+                    reject('error al cargar marcas', err);
+                } else {
+                    resolve(marcas);
+                }
+            });
+    });
+
+}
+
+function buscarMarcaNombre(busqueda, regex) {
+
+    return new Promise((resolve, reject) => {
+        Marca.find({ nombre: regex })
+            .populate('usuario', 'nombre email')
+            //.populate('tipoProducto')
+            .exec((err, marcas) => {
+                if (err) {
+                    reject('error al cargar marcas', err);
                 } else {
                     resolve(marcas);
                 }
@@ -163,6 +187,24 @@ function buscarModelos(busqueda, regex) {
             .exec((err, modelos) => {
                 if (err) {
                     reject('error al cargar medicos', err);
+                } else {
+                    resolve(modelos);
+                }
+            });
+    });
+
+}
+
+function buscarModelosById(busqueda, regex) {
+    // console.log(regex);
+
+    return new Promise((resolve, reject) => {
+        Modelo.find({ marca: busqueda })
+            .populate('marca', 'nombre')
+            //.populate('tipoProducto')
+            .exec((err, modelos) => {
+                if (err) {
+                    reject('error al cargar modelos', err);
                 } else {
                     resolve(modelos);
                 }

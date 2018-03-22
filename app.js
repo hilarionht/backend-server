@@ -81,7 +81,7 @@ app.get('*', function(req, res, next) {
 
 //conexion a la base de datos
 
-mongoose.connection.openUri('mongodb://localhost:27017/AngularDb', (err, res) => {
+mongoose.connection.openUri('mongodb://localhost:27017/DbDoctorCelular', (err, res) => {
 
     if (err) throw err;
     console.log('base de datos corriendo en el puerto 27017: \x1b[32m%s\x1b[0m', 'online');

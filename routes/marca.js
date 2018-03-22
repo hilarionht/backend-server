@@ -10,6 +10,7 @@ var mdAutenticacion = require("../middlewares/autenticacion");
 
 var Marca = require("../models/marca");
 
+
 app.get('/:id', mdAutenticacion.verificaToken, (req, res) => {
 
         var id = req.params.id;
@@ -44,24 +45,26 @@ app.get("/", (req, res, next) => {
     var desde = req.query.desde || 0;
     desde = Number(desde);
     Marca.find({})
+        .sort('nombre')
         .skip(desde)
         .limit(5)
-        .exec((err, marca) => {
-            if (err) {
-                return res.status(500).json({
-                    ok: false,
-                    mensaje: "Error loading marca",
-                    errors: err
-                });
-            }
-            Marca.count({}, (err, conteo) => {
-                res.status(200).json({
-                    ok: true,
-                    marca: marca,
-                    total: conteo
-                });
+
+    .exec((err, marca) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                mensaje: "Error loading marca",
+                errors: err
+            });
+        }
+        Marca.count({}, (err, conteo) => {
+            res.status(200).json({
+                ok: true,
+                marca: marca,
+                total: conteo
             });
         });
+    });
 
     //res.status(200).json({ mensaje: 'Get de usuarios!', ok: true });
 });

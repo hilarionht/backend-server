@@ -44,8 +44,10 @@ app.get("/", (req, res, next) => {
     var desde = req.query.desde || 0;
     desde = Number(desde);
     Modelo.find({})
-        .skip(desde)
-        .limit(5)
+        .sort({ nombre: 1 })
+        // .skip(desde)
+        //.limit(5)
+        .populate('marca', 'nombre')
         .exec((err, modelo) => {
             if (err) {
                 return res.status(500).json({
@@ -74,7 +76,8 @@ app.post("/", mdAutenticacion.verificaToken, (req, res, next) => {
 
     var modelo = new Modelo({
         nombre: body.nombre,
-        usuario: req.usuario._id
+        usuario: req.usuario._id,
+        marca: body.marca
     });
     modelo.save((err, modeloGuardado) => {
         if (err) {
