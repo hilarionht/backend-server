@@ -108,7 +108,8 @@ app.post('/google', (req, res, next) => {
 app.post('/', (req, res) => {
 
     var body = req.body;
-
+    console.log(body);
+    
     Usuario.findOne({ email: body.email }, (err, usuarioDB) => {
         if (err) {
             return res.status(500).json({

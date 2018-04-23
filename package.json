@@ -23,6 +23,7 @@
         "serve-index": "^1.9.1"
     },
     "devDependencies": {
-        "nodemon": "^1.14.11"
+        "nodemon": "^1.14.11",
+        "swagger-node-express": "~2.0"
     }
 }

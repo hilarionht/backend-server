@@ -1,3 +1,4 @@
+
 var express = require("express");
 
 app = express();
@@ -6,164 +7,166 @@ var bcrypt = require("bcryptjs");
 
 var jwt = require("jsonwebtoken");
 
-var mdAutenticacion = require("../middlewares/autenticacion");
+var mdAutenticacion = require("../../middlewares/autenticacion");
 
-var TipoProducto = require("../models/tipoproducto");
+var Menu = require("../../models/menu/menu");
+
 
 app.get('/:id', mdAutenticacion.verificaToken, (req, res) => {
 
         var id = req.params.id;
 
-        console.log('tipo de producto ...', req.params);
-        
-        TipoProducto.findById(id)
-            .exec((err, tipoProducto) => {
+        Menu.findById(id)
+            .exec((err, menu) => {
                 if (err) {
                     return res.status(500).json({
                         ok: false,
-                        mensaje: 'Error al buscar producto',
+                        mensaje: 'Error al buscar menu',
                         errors: err
                     });
                 }
 
-                if (!tipoProducto) {
+                if (!menu) {
                     return res.status(400).json({
                         ok: false,
-                        mensaje: 'El producto con el id ' + id + 'no existe',
-                        errors: { message: 'No existe un producto con ese ID' }
+                        mensaje: 'El menu con el id ' + id + 'no existe',
+                        errors: { message: 'No existe un menu con ese ID' }
                     });
                 }
                 res.status(200).json({
                     ok: true,
-                    tipoProducto: tipoProducto
+                    menu: menu
                 });
             })
     })
     // ========================================
-    //          Obtenere Todo los tipoProducto
+    //          Obtenere Todo los menu
     //=========================================
-app.get("/", mdAutenticacion.verificaToken, (req, res, next) => {
+app.get("/", (req, res, next) => {
     var desde = req.query.desde || 0;
-    desde = Number(desde);
     var limite = req.query.limite || 0;
+
+    desde = Number(desde);
     limite = Number(limite);
-    TipoProducto.find({})
+    Menu.find({})
         .sort({ nombre: 1 })
         .skip(desde)
         .limit(limite)
-        .exec((err, tipoProducto) => {
-            if (err) {
-                return res.status(500).json({
-                    ok: false,
-                    mensaje: "Error loading tipoProducto",
-                    errors: err
-                });
-            }
-            TipoProducto.count({}, (err, conteo) => {
-                res.status(200).json({
-                    ok: true,
-                    tipoProducto: tipoProducto,
-                    total: conteo
-                });
+
+    .exec((err, menu) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                mensaje: "Error loading menu",
+                errors: err
+            });
+        }
+        Menu.count({}, (err, conteo) => {
+            res.status(200).json({
+                ok: true,
+                menu: menu,
+                total: conteo
             });
         });
+    });
 
     //res.status(200).json({ mensaje: 'Get de usuarios!', ok: true });
 });
 
 // ========================================
-//          agregar tipoProducto nuevo
+//          agregar menu nuevo
 //=========================================
 app.post("/", mdAutenticacion.verificaToken, (req, res, next) => {
     var body = req.body;
-    console.log(body);
-    
-    var tipoProducto = new TipoProducto({
-        nombre: body.nombre.toUpperCase(),
-        descripcion: body.descripcion
+
+    var menu = new Menu({
+        nombre: body.nombre,
+        url: body.url,
+        icon: body.icon,
+        children: body.children,
+        parent: body.parent,
+        rol: body.rol
     });
-    tipoProducto.save((err, tipoProductoGuardado) => {
+    menu.save((err, menuGuardado) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
-                mensaje: "Error agregando tipoProducto",
+                mensaje: "Error agregando menu",
                 errors: err
             });
         }
         res.status(201).json({
             ok: true,
-            tipoProducto: tipoProductoGuardado
+            menu: menuGuardado
         });
     });
 });
 
 // ========================================
-//          actualizar tipoProducto
+//          actualizar menu
 //=========================================
 app.put("/:id", mdAutenticacion.verificaToken, (req, res) => {
     var id = req.params.id;
     var body = req.body;
 
-    TipoProducto.findById(id, (err, tipoProducto) => {
+    Menu.findById(id, (err, menu) => {
         if (err) {
             return res.status(500).json({
                 ok: false,
-                mensaje: "error al buscar tipoProducto",
+                mensaje: "error al buscar menu",
                 errors: err
             });
         }
-        if (!tipoProducto) {
+        if (!menu) {
             return res.status(400).json({
                 ok: false,
-                mensaje: "el tipoProducto con el id: " + id + "no existe ",
+                mensaje: "el menu con el id: " + id + "no existe ",
                 errors: { message: "no existe un usario con ese id" }
             });
         }
-        tipoProducto.nombre = body.nombre.toUpperCase();
-        tipoProducto.usuario = req.usuario._id;
-        tipoProducto.hospital = body.hospital;
-        tipoProducto.modificado = req.usuario._id;
-        tipoProducto.descripcion = body.descripcion.toUpperCase();
-        tipoProducto.save((err, tipoProductoGuardado) => {
+        menu.nombre = body.nombre.toUpperCase();
+        menu.usuario = req.usuario._id;
+
+        menu.save((err, menuGuardado) => {
             if (err) {
                 return res.status(400).json({
                     ok: false,
-                    mensaje: "Error actualizando tipoProducto",
+                    mensaje: "Error actualizando menu",
                     errors: err
                 });
             }
             res.status(200).json({
                 ok: true,
-                tipoProducto: tipoProductoGuardado
+                menu: menuGuardado
             });
         });
     });
 });
 // ========================================
-//          Eliminar un tipoProducto por id
+//          Eliminar un menu por id
 //=========================================
 
 app.delete("/:id", mdAutenticacion.verificaToken, (req, res) => {
     var id = req.params.id;
 
-    TipoProducto.findByIdAndRemove(id, (err, tipoProductoBorrado) => {
+    Menu.findByIdAndRemove(id, (err, menuBorrado) => {
         if (err) {
             return res.status(500).json({
                 ok: false,
-                mensaje: "Error al eliminar tipoProducto",
+                mensaje: "Error al eliminar menu",
                 errors: err
             });
         }
-        if (!tipoProductoBorrado) {
+        if (!menuBorrado) {
             return res.status(400).json({
                 ok: false,
-                mensaje: "el tipoProducto con el id: " + id + "no existe ",
+                mensaje: "el menu con el id: " + id + "no existe ",
                 errors: { message: "no existe un usario con ese id" }
             });
         }
         res.status(200).json({
             ok: true,
-            tipoProducto: tipoProductoBorrado
+            menu: menuBorrado
         });
     });
 });

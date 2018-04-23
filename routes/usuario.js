@@ -18,10 +18,12 @@ var Usuario = require('../models/usuario');
 //=========================================
 app.get('/', (req, res, next) => {
     var desde = req.query.desde || 0;
+    var limite = req.query.limite || 0;
+
     desde = Number(desde);
     Usuario.find({}, 'nombre email img role google')
         .skip(desde)
-        .limit(5)
+        .limit(limite)
         .exec(
             (err, usuarios) => {
                 if (err) {
