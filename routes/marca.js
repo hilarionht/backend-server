@@ -41,7 +41,7 @@ app.get('/:id', mdAutenticacion.verificaToken, (req, res) => {
     // ========================================
     //          Obtenere Todo los marca
     //=========================================
-app.get("/", (req, res, next) => {
+app.get("/", mdAutenticacion.verificaToken, (req, res, next) => {
     var desde = req.query.desde || 0;
     var limite = req.query.limite || 0;
 
